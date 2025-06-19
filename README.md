@@ -13,6 +13,10 @@ An AI-powered chat interface for generating KiCad circuit files through natural 
 - Real-time chat interface
 - Example circuit templates
 - Automatic KiCad environment setup
+- **RC Filter Circuit Generation** (NEW!)
+  - Low-pass and high-pass filters
+  - Configurable cutoff frequencies
+  - Automatic component value calculation
 
 ## Prerequisites
 
@@ -35,6 +39,8 @@ pip install -r requirements.txt
 
 ## Usage
 
+### Basic Usage
+
 1. Start the chat interface:
 ```bash
 streamlit run interface/chat_ui.py
@@ -49,6 +55,44 @@ streamlit run interface/chat_ui.py
 
 4. The generated KiCad files will be saved in the `kicad_output` directory
 
+### RC Filter Generation
+
+The project now includes a dedicated RC filter generation function:
+
+```python
+from generate_circuit import create_rc_filter
+
+# Create a low-pass filter with 1kHz cutoff
+create_rc_filter(cutoff_freq=1000, filter_type='low_pass')
+
+# Create a high-pass filter with 500Hz cutoff
+create_rc_filter(cutoff_freq=500, filter_type='high_pass')
+
+# Use custom component values
+create_rc_filter(cutoff_freq=2000, filter_type='low_pass', r_value=4700, c_value=0.01e-6)
+```
+
+#### RC Filter Parameters:
+- `cutoff_freq` (float): Cutoff frequency in Hz (default: 1000 Hz)
+- `filter_type` (str): 'low_pass' or 'high_pass' (default: 'low_pass')
+- `r_value` (float): Resistor value in ohms (default: 10k)
+- `c_value` (float): Capacitor value in farads (if None, calculated from cutoff freq)
+
+### Testing
+
+Run the test script to generate multiple RC filter examples:
+
+```bash
+python test_rc_filter.py
+```
+
+This will create:
+- RC low-pass filter (1kHz cutoff)
+- RC high-pass filter (500Hz cutoff)
+- Custom low-pass filter (2kHz, 4.7kΩ resistor)
+- Custom high-pass filter (100Hz, 0.01μF capacitor)
+- Audio low-pass filter (20kHz cutoff)
+
 ## Project Structure
 
 ```
@@ -60,10 +104,20 @@ kicad-ai-generator/
 │   └── chat_ui.py
 ├── utils/
 │   └── kicad_setup.py
-├── generate_circuit.py
+├── generate_circuit.py      # Main circuit generation functions
+├── test_rc_filter.py       # RC filter test script
 ├── requirements.txt
 └── README.md
 ```
+
+## Circuit Types Supported
+
+1. **Voltage Dividers**: Convert input voltage to desired output voltage
+2. **RC Filters**: 
+   - Low-pass filters (attenuate high frequencies)
+   - High-pass filters (attenuate low frequencies)
+   - Configurable cutoff frequencies
+   - Automatic component value calculation
 
 ## Contributing
 
